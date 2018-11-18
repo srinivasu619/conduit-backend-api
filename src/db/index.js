@@ -51,6 +51,7 @@ Article.hasMany(Comment);
  * Association between Comment and User.
  */
 Comment.belongsTo(User);
+Comment.belongsTo(Article);
 
 User.belongsToMany(User, {
   through: 'followee_follower',
@@ -62,5 +63,6 @@ module.exports = {
   User,
   Article,
   Tag,
-  Credential
+  Credential,
+  Comment
 }
