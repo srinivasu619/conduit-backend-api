@@ -1,6 +1,7 @@
 const {
     Article,
-    User
+    User,
+    Tag
 } = require('../db');
 const Slug = require('slug');
 const randomString = require('randomstring');
@@ -13,6 +14,12 @@ async function findBySlug(slug) {
         include: [{
             model: User,
             as: 'author'
+        }, {
+            model: Tag,
+            through: {
+                attributes: []
+            },
+            attributes: ['name']
         }]
     });
     return article;
@@ -23,7 +30,17 @@ async function findBySlugAndAuthor(slug, authorId) {
         where: {
             slug: slug,
             authorId: authorId
-        }
+        },
+        include: [{
+            model: User,
+            as: 'author'
+        }, {
+            model: Tag,
+            through: {
+                attributes: []
+            },
+            attributes: ['name']
+        }]
     });
 
     return article;
@@ -43,8 +60,8 @@ async function createArticle(title, description, body, authorId) {
 }
 
 async function updateArticle(slug, fields, authorId) {
-    const article = await findBySlugAndAuthor(slug,authorId);
-    if(article == null){
+    const article = await findBySlugAndAuthor(slug, authorId);
+    if (article == null) {
         return article;
     }
     if (fields.title) {
