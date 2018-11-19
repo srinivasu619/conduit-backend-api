@@ -7,6 +7,10 @@ const {
   validateLogin
 } = require('../../middlewares/validateUser');
 
+const {
+  validate
+} = require('../../util/credentialProcessing');
+
 const route = Router()
 
 /**
@@ -36,14 +40,19 @@ route.post('/login', validateLogin, async (req, res) => {
   const user = await UserController.findUserByEmail(loginQuery.email);
   if (user == null) {
     return res.status(422).json({
-      message: "user does not exist"
+      error: {
+        'email or password': ["is invalid."]
+      }
     });
   }
 
   const credential = await user.getCredential();
-  if (credential.password !== loginQuery.password) {
+  const validatePassword = await validate(loginQuery.password, credential.password)
+  if (!validatePassword) {
     return res.status(422).json({
-      message: "email or password is invalid."
+      error: {
+        'email or password': ["is invalid."]
+      }
     });
   }
 
