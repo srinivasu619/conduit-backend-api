@@ -8,6 +8,7 @@ const Tag = require('./models/tags');
 const Credential = require('./models/credential');
 const Comment = require('./models/comments');
 const Like = db.define('likes', {});
+const ArticleTag = db.define('articles_tags');
 
 User.hasOne(Credential);
 /**
@@ -24,11 +25,18 @@ User.hasMany(Article, {
 /**
  * Association between Article and Tags.
  */
+// Article.belongsToMany(Tag, {
+//   through: 'articles_tags'
+// });
+// Tag.belongsToMany(Article, {
+//   through: 'articles_tags'
+// });
+
 Article.belongsToMany(Tag, {
-  through: 'articles_tags'
+  through: ArticleTag
 });
 Tag.belongsToMany(Article, {
-  through: 'articles_tags'
+  through: ArticleTag
 });
 
 /**
@@ -64,5 +72,6 @@ module.exports = {
   Article,
   Tag,
   Credential,
-  Comment
+  Comment,
+  ArticleTag
 }
