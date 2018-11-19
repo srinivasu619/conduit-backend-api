@@ -2,13 +2,17 @@ const {
   Router
 } = require('express');
 const UserController = require('../../controllers/users');
+const {
+  validateNewUser,
+  validateLogin
+} = require('../../middlewares/validateUser');
 
 const route = Router()
 
 /**
  * Route for registering new Users.
  */
-route.post('/', async (req, res) => {
+route.post('/', validateNewUser, async (req, res) => {
   const user = req.body.user;
   const email = user.email;
   const username = user.username;
@@ -27,7 +31,7 @@ route.post('/', async (req, res) => {
 /**
  * Route for logging in an User.
  */
-route.post('/login', async (req, res) => {
+route.post('/login', validateLogin, async (req, res) => {
   const loginQuery = req.body.user;
   const user = await UserController.findUserByEmail(loginQuery.email);
   if (user == null) {

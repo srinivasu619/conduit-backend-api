@@ -8,6 +8,9 @@ const ProfileFactory = require('../../../dto/profileDTO');
 const ArticleFactory = require('../../../dto/articleDTO');
 const FeedController = require('../../../controllers/feed');
 const processArticle = require('../../../util/processArticle').processArticle;
+const {
+	validateArticle
+} = require('../../../middlewares/validateArticle');
 
 const route = Router()
 
@@ -25,10 +28,10 @@ route.get('/', authorization.optional, async (req, res) => {
 
 	const articleResult = await FeedController.getFeed(author, tag, favoritedBy, offset, limit);
 	const articles = [];
-	for(let article of articleResult.rows){
-        const result = await processArticle(article,user);
-        articles.push(result);
-    }
+	for (let article of articleResult.rows) {
+		const result = await processArticle(article, user);
+		articles.push(result);
+	}
 	return res.status(200).json({
 		articlesCount: articleResult.count,
 		articles: articles
@@ -36,7 +39,7 @@ route.get('/', authorization.optional, async (req, res) => {
 
 });
 
-route.post('/', authorization.required, async (req, res) => {
+route.post('/', authorization.required, validateArticle, async (req, res) => {
 	const user = req.user;
 	const article = req.body.article;
 	const title = article.title;

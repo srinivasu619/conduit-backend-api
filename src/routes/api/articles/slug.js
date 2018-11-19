@@ -33,6 +33,12 @@ route.get('/:slug', authorization.optional, async (req, res) => {
 route.put('/:slug', authorization.required, async (req, res) => {
 	const user = req.user;
 	const slug = req.params.slug;
+	if (!req.body.article) {
+		return res.status(400).json({
+			"status": "400",
+			"error": "Bad Request"
+		});
+	}
 	const article = req.body.article;
 
 	try {
@@ -131,7 +137,19 @@ route.get('/:slug/comments', authorization.optional, async (req, res) => {
 route.post('/:slug/comments', authorization.required, async (req, res) => {
 	const user = req.user;
 	const slug = req.params.slug;
+	if (!req.body.comment) {
+		return res.status(400).json({
+			"status": "400",
+			"error": "Bad Request"
+		});
+	}
 	const comment = req.body.comment;
+	if (!comment.body) {
+		return res.status(400).json({
+			"status": "400",
+			"error": "Bad Request"
+		});
+	}
 	try {
 		const article = await ArticleController.findBySlug(slug);
 		if (article == null) {
