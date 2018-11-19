@@ -25,7 +25,7 @@ function validateArticle(req, res, next) {
         error['body'] = ['cannot be empty']
     }
 
-    if (error !== {}) {
+    if (!Object.keys(error).length === 0 || !error.constructor === Object) {
         return res.status(422).json({
             error: error
         })
